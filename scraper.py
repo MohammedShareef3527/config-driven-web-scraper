@@ -23,8 +23,8 @@ import time
 from urllib.parse import urljoin, urlparse
 from urllib.robotparser import RobotFileParser
 
-import requests
-from bs4 import BeautifulSoup
+import requests  # pyright: ignore[reportMissingImports, reportMissingModuleSource]
+from bs4 import BeautifulSoup  # pyright: ignore[reportMissingImports, reportMissingModuleSource]
 
 DEFAULTS = {
     "max_pages": 1,
