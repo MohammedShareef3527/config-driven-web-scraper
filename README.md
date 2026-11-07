@@ -1,6 +1,25 @@
-# Web Scraper
+<div align="center">
+
+# Config-Driven Web Scraper
+
+**Describe what to collect in a small JSON file and get a clean CSV or JSON, across multiple pages, without changing code.**
+
+![Python](https://img.shields.io/badge/Python-0d1117?style=flat-square&logo=python&logoColor=3776AB)
+![Requests](https://img.shields.io/badge/Requests-0d1117?style=flat-square)
+![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup4-0d1117?style=flat-square)
+![pytest](https://img.shields.io/badge/tests-17%20passing-3fb950?style=flat-square&logo=pytest&logoColor=white&labelColor=0d1117)
+
+</div>
+
+---
+
+## Overview
 
 A config-driven web scraper in Python. You describe **what to collect** in a small JSON file (the page URL, the CSS selector for each item, and for each field), and the tool collects it across multiple pages and saves a CSV or JSON file. To scrape a different website, you change the config and not the code.
+
+## Problem Statement
+
+Most scraping scripts are written for one website and break or need rewriting for the next one. Collecting product lists, prices or listings for different sites should only require saying *where* the data is on the page. This tool separates that description (the config) from the scraping engine, and is polite to the sites it visits by default.
 
 ## Features
 
@@ -13,9 +32,37 @@ A config-driven web scraper in Python. You describe **what to collect** in a sma
 - **Excel-friendly output**: CSV is saved so `£` and `₹` display correctly in Excel; use a `.json` file name for JSON
 - **Tested offline**: 17 automated tests run on saved HTML pages and a fake network, never the live web
 
-## How to run
+## Sample Output
+
+[`books_sample.csv`](books_sample.csv) is the real output of running the scraper on the saved pages in `sample_pages/`.
+
+## Tech Stack
+
+- **Language:** Python 3
+- **HTTP:** requests
+- **HTML parsing:** BeautifulSoup4 (CSS selectors)
+- **robots.txt:** `urllib.robotparser`
+- **Testing:** pytest
+
+## Project Structure
+
+```text
+config-driven-web-scraper/
+├── scraper.py          # scraping engine and command-line interface
+├── test_scraper.py     # 17 offline tests
+├── config.json         # live example: books.toscrape.com (a site built for practice)
+├── config_local.json   # offline example using the saved pages
+├── sample_pages/       # two saved HTML pages for offline runs and tests
+├── books_sample.csv    # output produced by config_local.json
+├── requirements.txt
+└── .gitignore
+```
+
+## Installation and Setup
 
 ```bash
+git clone https://github.com/MohammedShareef3527/config-driven-web-scraper.git
+cd config-driven-web-scraper
 pip install -r requirements.txt
 
 # try it on the saved sample pages (no internet needed)
@@ -31,7 +78,7 @@ Options:
 python scraper.py config.json -o results.json --max-pages 5
 ```
 
-## The config file
+## Configuration
 
 ```json
 {
@@ -63,9 +110,11 @@ python scraper.py config.json -o results.json --max-pages 5
 | `max_pages`, `delay_seconds`, `retries`, `timeout_seconds` | limits and politeness settings |
 | `respect_robots_txt` | `true` by default |
 
+Command-line options `-o/--output`, `--max-pages` and `--ignore-robots` override the config. No API keys are needed.
+
 To find a selector: in Chrome, right-click an item, choose **Inspect**, and look at its tag and class names.
 
-## How it works
+## How It Works
 
 1. `load_config()` reads and validates the JSON
 2. `fetch_page()` downloads a page (or reads a local file), retrying temporary failures
@@ -73,22 +122,33 @@ To find a selector: in Chrome, right-click an item, choose **Inspect**, and look
 4. `scrape()` loops over pages: it checks `robots.txt`, extracts items, finds the next link, and waits before the next request. It stops at `max_pages` or if a page repeats
 5. `save()` writes the CSV or JSON file
 
-## Run the tests
+## Run the Tests
 
 ```bash
 pytest
 ```
 
-## Use responsibly
+## Use Responsibly
 
 Only scrape public data you are allowed to collect. Keep the delay between requests, don't overload a site, and respect its `robots.txt` and terms of service. Avoid collecting personal data.
 
-## Tech Stack
+## Future Improvements
 
-Python 3, requests, BeautifulSoup4, pytest
-
-## Possible Future Improvements
+These are planned ideas, not current features:
 
 - Pages that load their content with JavaScript (would need a browser tool such as Playwright)
 - Save results to a database or Google Sheets
 - Run on a schedule to track price changes
+
+## Learning Outcomes
+
+- HTTP requests, sessions, timeouts and retry with backoff
+- HTML parsing with CSS selectors in BeautifulSoup
+- Designing a data-driven tool where behaviour comes from configuration
+- Ethical scraping: robots.txt, rate limiting and identifying the client
+- Testing network code offline with saved pages and a fake session
+
+## Author
+
+**Mohammed Shamsul Qhadri Shareef**
+GitHub: [@MohammedShareef3527](https://github.com/MohammedShareef3527)
